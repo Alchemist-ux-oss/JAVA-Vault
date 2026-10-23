@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ali's Java Vault</title>
+<style>
+body{margin:0; font-family:Arial; background:#0f0f0f; color:white; padding:20px;}
+*{box-sizing:border-box;}
+.upload-area{display:none; max-width:800px; margin:20px auto; background:#1e1e1e; padding:20px; border-radius:12px; border:2px dashed bisque;}
+input, textarea, button{width:100%; padding:12px; margin:8px 0; border-radius:8px; border:none;}
+button{background:bisque; color:#111; font-weight:bold; cursor:pointer;}
+.card{max-width:800px; margin:20px auto; background:#fff; color:#111; border-radius:12px; padding:0; overflow:hidden; position:relative;}
+.card-header{display:flex; justify-content:space-between; padding:15px 20px; background:#222; color:white; font-weight:bold;}
+.code-box{padding:20px; background:#f5f5dc; font-family:Consolas, monospace; white-space:pre-wrap; user-select:none; -webkit-user-select:none;}
+.watermark{position:absolute; bottom:10px; right:10px; opacity:0.15; font-size:40px; transform:rotate(-20deg); pointer-events:none; font-weight:bold;}
+
+/* FIXED BACK BUTTON - NO MORE PURPLE */
+.back{
+  color:bisque !important; 
+  text-decoration:none !important;
+  font-weight:bold;
+  display:inline-block;
+  padding:8px 15px;
+  border:1px solid bisque;
+  border-radius:8px;
+}
+.back:visited{
+  color:bisque !important;
+  text-decoration:none !important;
+}
+.back:hover{
+  background:bisque;
+  color:#111 !important;
+}
+
+#adminBtn{position:fixed; bottom:10px; right:10px; width:20px; height:20px; opacity:0.05; cursor:pointer; background:white; border-radius:50%;}
+</style>
+</head>
+<body>
+<!-- FIXED CLASS FROM Projects TO back -->
+<a href="frontpage.html" class="back">← Back to Portfolio</a>
+
+<h1 style="text-align:center;">Ali's Java Vault</h1>
+<p style="text-align:center; color:#aaa;">Read Only — Projects Showcase</p>
+
+<div class="upload-area" id="adminArea">
+  <h3>Private Upload (Only Ali)</h3>
+  <input type="text" id="title" placeholder="Project Title">
+  <textarea id="code" rows="8" placeholder="Paste Java code..."></textarea>
+  <input type="file" id="fileInput" accept=".java,.txt">
+  <button onclick="uploadCode()">Upload to Vault</button>
+  <button onclick="hideAdmin()" style="background:#333; color:white;">Close</button>
+</div>
+
+<div id="vault"></div>
+<div id="adminBtn" title=""></div>
+
+<script>
+let projects = JSON.parse(localStorage.getItem('ali_vault') || '[]');
+render();
+function uploadCode(){
+  const title = document.getElementById('title').value || "Untitled";
+  let code = document.getElementById('code').value;
+  if(!code && document.getElementById('fileInput').files[0]){
+    const reader = new FileReader();
+    reader.onload = e => saveProject(title, e.target.result);
+    reader.readAsText(document.getElementById('fileInput').files[0]);
+    return;
+  }
+  if(!code){ alert("Paste code or choose file"); return; }
+  saveProject(title, code);
+}
+function saveProject(title, code){
+  projects.unshift({title, code, date: new Date().toLocaleString()});
+  localStorage.setItem('ali_vault', JSON.stringify(projects));
+  document.getElementById('title').value=''; document.getElementById('code').value='';
+  render();
+}
+function render(){
+  const vault = document.getElementById('vault');
+  vault.innerHTML = "";
+  if(projects.length==0){
+    vault.innerHTML = "<p style='text-align:center; color:#666; margin-top:50px;'>No projects uploaded yet.</p>";
+    return;
+  }
+  projects.forEach(p=>{
+    vault.innerHTML += `
+    <div class="card">
+      <div class="card-header"><span>${p.title}</span><span style="font-weight:normal; font-size:12px;">${p.date}</span></div>
+      <div class="code-box">${escapeHtml(p.code)}</div>
+      <div class="watermark">Ali ©</div>
+    </div>`;
+  });
+}
+function escapeHtml(t){ return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+let clicks=0;
+document.getElementById('adminBtn').addEventListener('click', ()=>{
+  clicks++;
+  if(clicks>=5){
+    let key = prompt("Enter secret key:");
+    if(key==="Ellenocry;7654@"){
+      document.getElementById('adminArea').style.display="block";
+      window.scrollTo(0,0);
+    } else { alert("Wrong"); }
+    clicks=0;
+  }
+  setTimeout(()=>clicks=0, 2000);
+});
+function hideAdmin(){ document.getElementById('adminArea').style.display="none"; }
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if((e.ctrlKey && (e.key==='c' || e.key==='u' || e.key==='s')) || e.key==='F12') e.preventDefault();
+});
+</script>
+</body>
+</html>

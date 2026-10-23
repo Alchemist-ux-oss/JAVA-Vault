@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ali's Portfolio</title>
+<style>
+body { margin: 0; font-family: Arial, sans-serif; }
+*{ box-sizing: border-box;}
+html { 
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}   
+.cover, .about, .Projects, .java {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;	
+  height: 100vh;
+}
+.cover {
+  background-image: url('images/image3.jpg');
+  background-size: cover; background-position: center;
+  background-attachment: fixed;
+  display: flex; justify-content: flex-end; align-items: flex-end;
+  padding: 50px; text-align: right;
+}
+.cover h1{ color: white; font-size: 50px; text-shadow: 2px 2px 10px black; }
+.about {
+  background-image: url('images/image5.jpg');
+  background-size: cover; background-position:center;
+  background-attachment: fixed;    
+  padding: 40px; display:flex; flex-direction:column;
+  justify-content:center; color: white; text-shadow: 1px 1px 5px black;
+}
+.Projects { min-height: 100vh; display: flex; }
+.Projects-image { width: 20%; background-image: url('images/image6.jpg'); background-size: cover; background-position: center;  }
+.Projects-text { width: 80%; background-color:bisque; text-align: center; padding:40px; } 
+
+.java {
+  background-image: url('images/image4.jpg');
+  background-attachment: fixed;
+  background-size: cover; background-position: center;
+  padding: 0; display:flex; justify-content:center; align-items:center;
+  perspective: 2000px; overflow: hidden; position:relative;
+}
+.book {
+  width: 80%; height: 80%;
+  display: flex; transform-style: preserve-3d;
+  transition: transform 1.2s ease;
+}
+.book-page {
+  width: 50%; height: 100%;
+  background: rgba(255,255,255,0.95);
+  color: #333; padding: 40px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display:flex; flex-direction:column; justify-content:center;
+}
+.book-left { border-radius: 12px 0 0 12px; transform-origin: right center; transition: transform 1.2s ease; z-index: 2; }
+.book-right { border-radius: 0 12px 12px 0; background: bisque; }
+.java.open-book .book-left { transform: rotateY(-15deg); }
+.java.open-book .book { transform: rotateY(5deg) scale(1.02); }
+
+.java-box {
+  position:absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 15px;
+  background: white; padding: 15px 25px; border-radius: 12px;
+  text-decoration: none; color: #333; font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);  
+} 
+.java-box:hover{ transform: translateX(-50%) scale(1.05); }
+</style>
+</head>
+<body>
+<div class="cover"><h1>Welcome to<br>Ali's<br> World</h1></div>
+
+<section class="about">
+  <h1>About Me</h1>
+  <p>    As-salamu alaykum, I'm Ali — a BCA student passionate about Cyber Security and Ethical Hacking.
+I'm currently learning through hands-on labs with Kali Linux, VirtualBox, and Wireshark, understanding networking from eth0 to real-world OPSEC. My goal is to become a security researcher focused on privacy and secure systems. I also enjoy learning about building cool things with JAVA
+and i am loooking forward to learn more about programming and ethical hacking.
+anyway my favourite subjects so far are Java, C and Essentials of OS.</p>
+</section>
+
+<section class="Projects">
+  <div class="Projects-image"></div>
+  <div class="Projects-text">
+    <h1>My Projects</h1>
+    <p>Here are my uploaded documents and projects</p>
+  </div> 
+</section>
+
+<section class="java" id="java">
+  <div class="book">
+    <div class="book-page book-left">
+      <p>Core Java | OOP | Swing<br>Projects Building With Love</p>
+    </div>
+    <div class="book-page book-right">
+      <h2>My Java Work</h2>  
+      <ul>
+       <li>Student Management System</li>
+       <li>Calculator in swing</li>
+       <li>File Encryption Tool</li>
+      </ul>  
+      <p><small>Click below to open &gt;</small></p>      
+    </div>
+  </div>
+  <a href="javapage.html" class="java-box">
+    Open My JAVA Projects →
+  </a>
+</section>
+
+<script>
+const javaSection = document.querySelector('#java');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('open-book');
+    } else {
+      entry.target.classList.remove('open-book');
+    }
+  });
+}, { threshold: 0.6 });
+observer.observe(javaSection);
+</script>
+</body>
+</html>
